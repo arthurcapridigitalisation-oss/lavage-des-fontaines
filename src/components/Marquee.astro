@@ -1,0 +1,17 @@
+---
+interface Props {
+  items: string[];
+}
+const { items } = Astro.props;
+// Contenu doublé pour une boucle sans couture
+const loop = [...items, ...items, ...items, ...items];
+---
+
+<div class="stripe-band-wrap" aria-hidden="true">
+  <div class="stripe-band" data-marquee>
+    <div class="stripe-band__track">
+      {loop.map((t) => <span>{t}</span>)}
+    </div>
+  </div>
+</div>
+<p class="sr-only">{items.join(', ')}</p>

@@ -1,0 +1,401 @@
+---
+import Icon from './Icon.astro';
+import { programmes } from '../data/site.js';
+
+// Liste cumulée des étapes, de la formule la plus simple à la plus complète
+const allSteps = programmes.flatMap((p, level) => p.steps.map((label) => ({ label, level })));
+const defaultIndex = 3; // Gold sélectionné par défaut
+---
+
+<section class="section section--dark programmes" id="programmes" data-programmes>
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker">Portiques WashTec</p>
+      <h2>Choisissez votre <span class="text-grad">programme</span></h2>
+      <p class="lead">
+        Cinq programmes, du lavage express au soin complet. Chaque formule inclut tout ce que propose la précédente.
+      </p>
+    </div>
+
+    <div class="prog">
+      <div class="prog__tabs" role="tablist" aria-label="Programmes de lavage">
+        {
+          programmes.map((p, i) => (
+            <button
+              class="prog__tab"
+              role="tab"
+              type="button"
+              id={`tab-${p.id}`}
+              aria-selected={i === defaultIndex ? 'true' : 'false'}
+              aria-controls="prog-panel"
+              tabindex={i === defaultIndex ? 0 : -1}
+              data-index={i}
+              style={`--tab-color:${p.color}`}
+            >
+              <span class="prog__tab-num">{i + 1}</span>
+              <span class="prog__tab-name">{p.name}</span>
+              <span class="prog__tab-price">{p.price} €</span>
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="prog__panel" id="prog-panel" role="tabpanel" aria-labelledby={`tab-${programmes[defaultIndex].id}`}>
+        <div class="prog__summary">
+          <p class="prog__label">Programme</p>
+          <p class="prog__name" data-prog-name>{programmes[defaultIndex].name}</p>
+          <p class="prog__price">
+            <span data-prog-price>{programmes[defaultIndex].price}</span><span class="prog__euro">€</span>
+          </p>
+          <div class="prog__meter" aria-hidden="true">
+            <span data-prog-meter style={`width:${((defaultIndex + 1) / programmes.length) * 100}%`}></span>
+          </div>
+          <p class="prog__count"><span data-prog-count>{allSteps.filter((s) => s.level <= defaultIndex).length}</span> étapes de lavage</p>
+        </div>
+
+        <ol class="prog__steps">
+          {
+            allSteps.map((s) => (
+              <li class:list={['prog__step', { 'is-on': s.level <= defaultIndex }]} data-level={s.level}>
+                <span class="prog__check">
+                  <Icon name="check" />
+                </span>
+                <span class="prog__step-label">{s.label}</span>
+                <span class="prog__step-tag" style={`--tab-color:${programmes[s.level].color}`}>
+                  {programmes[s.level].name}
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+
+    <p class="prog__note">
+      Paiement CB sans contact, jetons ou badge. Carte d’abonnement fidélité disponible dans nos boutiques.
+    </p>
+  </div>
+</section>
+
+<script type="application/json" id="prog-data" set:html={JSON.stringify(programmes.map((p) => ({ name: p.name, price: p.price })))} />
+
+<style>
+  .prog {
+    display: grid;
+    gap: 28px;
+  }
+
+  .prog__tabs {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+
+  .prog__tab {
+    position: relative;
+    display: grid;
+    gap: 2px;
+    justify-items: start;
+    padding: 16px 18px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius);
+    background: var(--anthracite-2);
+    color: var(--white);
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+    transition: background 0.3s, border-color 0.3s, transform 0.3s var(--ease-out);
+  }
+
+  .prog__tab::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 4px;
+    background: var(--tab-color);
+  }
+
+  .prog__tab:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .prog__tab[aria-selected='true'] {
+    background: var(--white);
+    color: var(--ink);
+    border-color: var(--white);
+  }
+
+  .prog__tab-num {
+    font-size: 0.8rem;
+    font-weight: 600;
+    opacity: 0.6;
+  }
+
+  .prog__tab-name {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 1.7rem;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .prog__tab-price {
+    font-weight: 600;
+    color: var(--orange-bright);
+  }
+
+  .prog__tab[aria-selected='true'] .prog__tab-price {
+    color: var(--orange);
+  }
+
+  .prog__panel {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: clamp(24px, 4vw, 56px);
+    padding: clamp(24px, 4vw, 48px);
+    border-radius: var(--radius-lg);
+    background: var(--anthracite-2);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .prog__label {
+    font-size: 0.85rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #9a9a9a;
+  }
+
+  .prog__name {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: clamp(2.6rem, 5vw, 4rem);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .prog__price {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: clamp(5rem, 11vw, 8.5rem);
+    line-height: 0.9;
+    margin-top: 10px;
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-right: 0.1em;
+  }
+
+  .prog__euro {
+    font-size: 0.5em;
+    margin-left: 0.08em;
+  }
+
+  .prog__meter {
+    height: 10px;
+    margin-top: 28px;
+    border-radius: 6px;
+    background: repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.08) 0 6px, transparent 6px 12px);
+    overflow: hidden;
+  }
+
+  .prog__meter span {
+    display: block;
+    height: 100%;
+    background: var(--grad);
+    border-radius: 6px;
+    transition: width 0.7s var(--ease-out);
+  }
+
+  .prog__count {
+    margin-top: 12px;
+    color: #bdbdbd;
+  }
+
+  .prog__count span {
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  .prog__steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(7, auto);
+    grid-auto-flow: column;
+    gap: 8px 16px;
+    align-content: start;
+  }
+
+  .prog__step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: #6f6f6f;
+    transition: color 0.3s, background 0.3s;
+  }
+
+  .prog__check {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #4a4a4a;
+    color: transparent;
+    transition: background 0.3s, border-color 0.3s, color 0.3s, transform 0.4s var(--ease-out);
+  }
+
+  .prog__check :global(svg) {
+    width: 16px;
+    height: 16px;
+    stroke-width: 3;
+  }
+
+  .prog__step-label {
+    flex: 1;
+    line-height: 1.3;
+  }
+
+  .prog__step-tag {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid currentColor;
+    opacity: 0.5;
+  }
+
+  .prog__step.is-on {
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .prog__step.is-on .prog__check {
+    background: var(--grad);
+    border-color: transparent;
+    color: var(--white);
+  }
+
+  .prog__step.is-on .prog__step-tag {
+    color: var(--tab-color);
+    opacity: 1;
+    filter: brightness(1.35);
+  }
+
+  .prog__note {
+    margin-top: 28px;
+    color: #9a9a9a;
+  }
+
+  @media (max-width: 900px) {
+    .prog__tabs {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      margin-inline: calc(var(--gutter) * -1);
+      padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+    .prog__tab {
+      flex: 0 0 140px;
+      scroll-snap-align: start;
+    }
+    .prog__panel {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .prog__steps {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+      grid-auto-flow: row;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  const root = document.querySelector<HTMLElement>('[data-programmes]');
+  if (root) {
+    const data: { name: string; price: number }[] = JSON.parse(document.getElementById('prog-data')!.textContent!);
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('.prog__tab')];
+    const steps = [...root.querySelectorAll<HTMLElement>('.prog__step')];
+    const panel = root.querySelector<HTMLElement>('.prog__panel')!;
+    const nameEl = root.querySelector<HTMLElement>('[data-prog-name]')!;
+    const priceEl = root.querySelector<HTMLElement>('[data-prog-price]')!;
+    const meter = root.querySelector<HTMLElement>('[data-prog-meter]')!;
+    const countEl = root.querySelector<HTMLElement>('[data-prog-count]')!;
+    const motion = document.documentElement.classList.contains('js-motion');
+    let current = tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true');
+    const price = { v: data[current].price };
+
+    const select = (index: number, focus = false) => {
+      if (index === current) return;
+      const goingUp = index > current;
+      current = index;
+
+      tabs.forEach((t, i) => {
+        const on = i === index;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      if (focus) tabs[index].focus();
+      panel.setAttribute('aria-labelledby', tabs[index].id);
+      nameEl.textContent = data[index].name;
+      meter.style.width = `${((index + 1) / data.length) * 100}%`;
+
+      const active = steps.filter((s) => Number(s.dataset.level) <= index);
+      countEl.textContent = String(active.length);
+
+      if (!motion) {
+        priceEl.textContent = String(data[index].price);
+        steps.forEach((s) => s.classList.toggle('is-on', Number(s.dataset.level) <= index));
+        return;
+      }
+
+      gsap.to(price, {
+        v: data[index].price,
+        duration: 0.6,
+        ease: 'power2.out',
+        onUpdate: () => (priceEl.textContent = String(Math.round(price.v))),
+      });
+      gsap.fromTo(nameEl, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'expo.out' });
+
+      // Les étapes s'allument (ou s'éteignent) une à une, comme un cycle de lavage
+      const changing = steps.filter((s) => s.classList.contains('is-on') !== Number(s.dataset.level) <= index);
+      const ordered = goingUp ? changing : changing.reverse();
+      ordered.forEach((s, i) => {
+        gsap.delayedCall(i * 0.07, () => {
+          s.classList.toggle('is-on', Number(s.dataset.level) <= current);
+          if (s.classList.contains('is-on')) {
+            gsap.fromTo(s.querySelector('.prog__check'), { scale: 0.4 }, { scale: 1, duration: 0.5, ease: 'back.out(3)' });
+          }
+        });
+      });
+    };
+
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i));
+      t.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') select((current + 1) % tabs.length, true);
+        if (e.key === 'ArrowLeft') select((current - 1 + tabs.length) % tabs.length, true);
+      });
+    });
+  }
+</script>

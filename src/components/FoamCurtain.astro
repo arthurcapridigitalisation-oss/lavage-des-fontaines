@@ -1,0 +1,236 @@
+---
+// Moment signature : un rouleau de brosse aux couleurs du logo traverse l'écran au scroll,
+// en poussant la mousse devant lui. Au-dessus du rouleau la voiture est propre, en dessous elle est sale.
+const img = { src: '/img/ferrari-softcare.webp', w: 1080, h: 1350 };
+---
+
+<section class="foam" id="mousse" data-foam aria-labelledby="foam-title">
+  <div class="foam__sticky">
+    <!-- État « avant » -->
+    <div class="foam__layer foam__layer--dirty" aria-hidden="true">
+      <div class="foam__card">
+        <img src={img.src} alt="" width={img.w} height={img.h} />
+        <div class="foam__grime"></div>
+        <div class="foam__overlay">
+          <p class="kicker">Avant</p>
+          <p class="foam__title">Poussière, boue,<br />sel, insectes…</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- État « après » (révélé par le passage du rouleau) -->
+    <div class="foam__layer foam__layer--clean" data-foam-clean>
+      <div class="foam__card">
+        <img src={img.src} alt="Ferrari rouge, propre et brillante, sous le portique WashTec SoftCare" width={img.w} height={img.h} />
+        <div class="foam__sheen" data-foam-sheen></div>
+        <div class="foam__overlay">
+          <p class="kicker">Après le portique</p>
+          <h2 class="foam__title" id="foam-title">Éclatante. <span class="text-grad">Vraiment.</span></h2>
+          <p class="foam__text">
+            Rideau de mousse colorée, prélavage intensif, rinçage à l’eau osmosée : nos portiques{' '}
+            <strong>WashTec SoftCar Pro 2</strong> sont les premiers des 2 Savoies.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rouleau de brosse, mousse et bulles (canvas) -->
+    <canvas class="foam__canvas" data-foam-canvas aria-hidden="true"></canvas>
+  </div>
+</section>
+
+<style>
+  .foam {
+    position: relative;
+    height: 280vh;
+    background: var(--anthracite);
+    color: var(--white);
+  }
+
+  .foam__sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .foam__layer {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: calc(var(--header-h) - 20px) var(--gutter) 24px;
+  }
+
+  .foam__layer--dirty {
+    background: radial-gradient(ellipse at 50% 40%, #2f2a23, #1d1a16 70%);
+  }
+
+  .foam__layer--clean {
+    background: radial-gradient(ellipse at 50% 40%, #333, var(--anthracite) 70%);
+    clip-path: inset(0 0 100% 0);
+  }
+
+  /* Photo centrée, aussi grande que l'écran le permet (format 4:5) */
+  .foam__card {
+    position: relative;
+    height: min(100%, 860px);
+    max-width: 100%;
+    aspect-ratio: 1080 / 1350;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 50px 100px -30px rgba(0, 0, 0, 0.85);
+  }
+
+  .foam__card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .foam__overlay {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: clamp(20px, 3vw, 36px);
+    padding-top: 120px;
+    background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.55) 40%, rgba(0, 0, 0, 0.85));
+  }
+
+  .foam__overlay .kicker {
+    margin-bottom: 10px;
+  }
+
+  .foam__title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    line-height: 0.95;
+    font-size: clamp(2.2rem, 4.6vw, 4rem);
+  }
+
+  .foam__text {
+    margin-top: 14px;
+    max-width: 44ch;
+    font-size: 1.02rem;
+    color: #d6d6d6;
+  }
+
+  .foam__text strong {
+    color: var(--white);
+  }
+
+  /* ----- État sale : photo ternie + plusieurs couches de saleté ----- */
+  .foam__layer--dirty .foam__card img {
+    filter: grayscale(0.7) sepia(0.6) saturate(0.75) brightness(0.62) contrast(0.85) blur(0.8px);
+    transform: scale(1.01);
+  }
+
+  .foam__layer--dirty .foam__title,
+  .foam__layer--dirty .kicker {
+    color: #a08f78;
+  }
+
+  .foam__layer--dirty .foam__overlay {
+    background: linear-gradient(180deg, transparent, rgba(30, 22, 12, 0.6) 40%, rgba(30, 22, 12, 0.9));
+  }
+
+  .foam__grime {
+    position: absolute;
+    inset: 0;
+    background:
+      /* moucherons écrasés à l'avant */
+      radial-gradient(circle at 41% 66%, rgba(25, 20, 12, 0.85) 0 2px, transparent 3px),
+      radial-gradient(circle at 46% 64%, rgba(25, 20, 12, 0.8) 0 1.5px, transparent 2.5px),
+      radial-gradient(circle at 53% 67%, rgba(25, 20, 12, 0.85) 0 2px, transparent 3px),
+      radial-gradient(circle at 58% 63%, rgba(25, 20, 12, 0.75) 0 1.5px, transparent 2.5px),
+      radial-gradient(circle at 63% 68%, rgba(25, 20, 12, 0.8) 0 2px, transparent 3px),
+      radial-gradient(circle at 37% 69%, rgba(25, 20, 12, 0.7) 0 1.5px, transparent 2.5px),
+      /* éclaboussures de boue en bas de caisse */
+      radial-gradient(ellipse 22% 9% at 33% 79%, rgba(78, 56, 34, 0.85), transparent 70%),
+      radial-gradient(ellipse 18% 8% at 67% 80%, rgba(78, 56, 34, 0.85), transparent 70%),
+      radial-gradient(ellipse 40% 10% at 50% 84%, rgba(70, 50, 30, 0.7), transparent 70%),
+      /* boue au sol et remontant sur la carrosserie */
+      linear-gradient(0deg, rgba(62, 45, 28, 0.92) 0%, rgba(80, 59, 37, 0.6) 16%, rgba(105, 80, 52, 0.25) 34%, transparent 52%),
+      /* voile de poussière général */
+      linear-gradient(rgba(150, 128, 96, 0.16), rgba(150, 128, 96, 0.16));
+  }
+
+  /* Taches de boue irrégulières (bruit SVG) */
+  .foam__grime::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='540' height='675'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.014' numOctaves='4' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.33 0 0 0 0 0.24 0 0 0 0 0.14 0 0 0 3.6 -2.05'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E")
+      center / cover;
+    opacity: 0.6;
+  }
+
+  /* Grain de poussière fin + coulures verticales */
+  .foam__grime::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.23 0 0 0 0 0.15 0 0 0 2.6 -1.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      repeating-linear-gradient(90deg, transparent 0 34px, rgba(80, 58, 36, 0.3) 34px 37px, transparent 37px 71px, rgba(80, 58, 36, 0.2) 71px 73px, transparent 73px 97px);
+    -webkit-mask-image: linear-gradient(180deg, black 0%, black 30%, rgba(0, 0, 0, 0.4) 60%, black 100%);
+    mask-image: linear-gradient(180deg, black 0%, black 30%, rgba(0, 0, 0, 0.4) 60%, black 100%);
+  }
+
+  .foam__sheen {
+    position: absolute;
+    inset: -20%;
+    background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.55) 50%, transparent 60%);
+    transform: translateX(-100%);
+    pointer-events: none;
+  }
+
+  .foam__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  @media (max-width: 700px) {
+    .foam__layer {
+      padding-top: calc(var(--header-h) + 8px);
+      padding-bottom: 72px;
+    }
+    .foam__text {
+      display: none;
+    }
+    .foam__overlay {
+      padding-top: 80px;
+    }
+  }
+
+  /* Sans animation : on affiche directement l'état « après » */
+  :global(html:not(.js-motion)) .foam {
+    height: auto;
+  }
+  :global(html:not(.js-motion)) .foam__sticky {
+    position: relative;
+    height: auto;
+    padding-block: 100px;
+  }
+  :global(html:not(.js-motion)) .foam__layer--dirty,
+  :global(html:not(.js-motion)) .foam__canvas {
+    display: none;
+  }
+  :global(html:not(.js-motion)) .foam__layer--clean {
+    position: relative;
+    clip-path: none;
+  }
+  :global(html:not(.js-motion)) .foam__card {
+    height: auto;
+    width: min(100%, 560px);
+  }
+</style>
+
+<script>
+  import { initBrush } from '../scripts/brush';
+  initBrush();
+</script>

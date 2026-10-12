@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Marquee from '../components/Marquee.astro';
+import FoamCurtain from '../components/FoamCurtain.astro';
+import Programmes from '../components/Programmes.astro';
+import Stats from '../components/Stats.astro';
+import StationsOverview from '../components/StationsOverview.astro';
+import Rdv from '../components/Rdv.astro';
+import Extras from '../components/Extras.astro';
+import Reviews from '../components/Reviews.astro';
+import CtaBand from '../components/CtaBand.astro';
+---
+
+<Base
+  title="Lavage des Fontaines · Stations de lavage auto à Marnaz et Scionzier"
+  description="Deux stations de lavage premium WashTec à Marnaz et Scionzier : portiques, pistes haute pression, aspirateurs, boutique 7j/7. Nettoyage intérieur/extérieur et céramique sur RDV."
+>
+  <Hero />
+  <Marquee
+    items={['Technologie WashTec', 'Rideau de mousse colorée', 'Piste chauffée l’hiver', 'Personnel présent 7j/7', 'Ouvert 24h/24 à Scionzier', 'Eau recyclée']}
+  />
+  <FoamCurtain />
+  <Programmes />
+  <Stats />
+  <StationsOverview />
+  <Rdv />
+  <Extras />
+  <Reviews />
+  <CtaBand />
+</Base>

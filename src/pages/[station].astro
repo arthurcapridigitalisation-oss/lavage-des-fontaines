@@ -1,0 +1,546 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Programmes from '../components/Programmes.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { company, stations } from '../data/site.js';
+
+export function getStaticPaths() {
+  return Object.values(stations).map((s) => ({ params: { station: s.slug }, props: { s } }));
+}
+
+const { s } = Astro.props;
+const other = Object.values(stations).find((o) => o.slug !== s.slug)!;
+const routeUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(s.mapsQuery)}`;
+const mapEmbed = `https://www.google.com/maps?q=${encodeURIComponent(s.mapsQuery)}&output=embed`;
+const [postal, ...cityParts] = s.city.split(' ');
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AutoWash',
+  name: `${company.name} ${s.name}`,
+  url: new URL(import.meta.env.BASE_URL.replace(/\/$/, '') + `/${s.slug}/`, Astro.site).toString(),
+  image: new URL(import.meta.env.BASE_URL.replace(/\/$/, '') + s.hero, Astro.site).toString(),
+  telephone: '+33638852265',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: s.address,
+    postalCode: postal,
+    addressLocality: cityParts.join(' '),
+    addressCountry: 'FR',
+  },
+  aggregateRating: { '@type': 'AggregateRating', ratingValue: s.rating, reviewCount: s.reviews },
+  ...(s.hours.open && s.hours.close
+    ? {
+        openingHoursSpecification: {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+          opens: s.hours.open,
+          closes: s.hours.close === '24:00' ? '23:59' : s.hours.close,
+        },
+      }
+    : {}),
+};
+---
+
+<Base
+  title={`Station de lavage ${s.name} · Lavage des Fontaines`}
+  description={`${s.intro} ${s.address}, ${s.city}. ${s.hoursLabel}.`}
+  image={s.hero}
+  jsonLd={jsonLd}
+>
+  <section class="st-hero">
+    <div class="st-hero__bg" aria-hidden="true">
+      <img src={s.hero} alt="" fetchpriority="high" data-parallax="12" />
+    </div>
+    <div class="wrap st-hero__inner">
+      <p class="kicker">Station de lavage</p>
+      <h1>{s.name}</h1>
+      <p class="st-hero__intro">{s.intro}</p>
+      <div class="st-hero__meta">
+        <span
+          class="st-status"
+          data-open-status
+          data-open={s.hours.open ?? undefined}
+          data-close={s.hours.close ?? undefined}
+        >
+          <span class="st-status__dot" aria-hidden="true"></span>
+          <span data-open-label>{s.hoursLabel}</span>
+        </span>
+        <span class="st-hero__rating"><Icon name="star" /> {String(s.rating).replace('.', ',')} · {s.reviews} avis Google</span>
+      </div>
+      <div class="st-hero__actions">
+        <a class="btn" href={routeUrl} target="_blank" rel="noopener"><Icon name="route" /> Itinéraire</a>
+        <a class="btn btn--ghost" href={company.phoneHref}><Icon name="phone" /> {company.phone}</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="stripes" aria-hidden="true"></div>
+
+  <section class="section section--white">
+    <div class="wrap">
+      <div class="infos">
+        <div class="infos__item" data-reveal>
+          <div class="icon-tile"><Icon name="pin" /></div>
+          <div>
+            <h2 class="infos__title">Adresse</h2>
+            <p>{s.address}<br />{s.city}</p>
+          </div>
+        </div>
+        <div class="infos__item" data-reveal>
+          <div class="icon-tile"><Icon name="clock" /></div>
+          <div>
+            <h2 class="infos__title">Horaires</h2>
+            <p>{s.hoursLabel}</p>
+            <p class="infos__muted">Boutique ouverte 7j/7</p>
+          </div>
+        </div>
+        <div class="infos__item" data-reveal>
+          <div class="icon-tile"><Icon name="route" /></div>
+          <div>
+            <h2 class="infos__title">Accès</h2>
+            <p>{s.access}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head equip-head">
+        <p class="kicker">Équipements</p>
+        <h2>Tout ce qu’il faut, <span class="text-grad">sur place</span></h2>
+      </div>
+
+      <div class="equip">
+        {
+          s.equipment.map((e) => (
+            <article class="equip__item" data-reveal>
+              <div class="icon-tile">
+                <Icon name={e.icon} />
+              </div>
+              <h3>{e.title}</h3>
+              <p>{e.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <Programmes />
+
+  <section class="section section--light">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">En images</p>
+        <h2>La station <span class="text-grad">{s.name}</span></h2>
+      </div>
+      <div class="gallery">
+        {
+          s.gallery.map((g) => (
+            <figure class="gallery__item" data-reveal>
+              <img src={g.src} alt={g.alt} loading="lazy" />
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--white">
+    <div class="wrap map-grid">
+      <div>
+        <p class="kicker">Nous trouver</p>
+        <h2>Venez <span class="text-grad">nous voir</span></h2>
+        <p class="lead map-lead">{s.address}, {s.city}</p>
+        <p class="map-access">{s.access}</p>
+        <a class="btn" href={routeUrl} target="_blank" rel="noopener"><Icon name="route" /> Lancer l’itinéraire</a>
+
+        <a class="other" href={`/${other.slug}/`}>
+          <span class="other__label">Voir aussi</span>
+          <span class="other__name">Station {other.name} <Icon name="arrow" /></span>
+          <span class="other__meta">{other.hoursLabel}</span>
+        </a>
+      </div>
+
+      <div class="map" data-map={mapEmbed}>
+        <img src={s.gallery[0].src} alt="" loading="lazy" />
+        <button type="button" class="map__btn" data-map-load>
+          <Icon name="pin" />
+          <span>Afficher la carte</span>
+          <small>Chargement de Google Maps</small>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title={`On vous attend à ${s.name}.`} />
+</Base>
+
+<style>
+  .st-hero {
+    position: relative;
+    min-height: 88svh;
+    display: flex;
+    align-items: flex-end;
+    padding-block: calc(var(--header-h) + 60px) clamp(56px, 8vw, 100px);
+    color: var(--white);
+    background: var(--ink);
+    overflow: hidden;
+  }
+
+  .st-hero__bg {
+    position: absolute;
+    inset: 0;
+  }
+
+  .st-hero__bg img {
+    width: 100%;
+    height: 120%;
+    margin-top: -10%;
+    object-fit: cover;
+  }
+
+  .st-hero__bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(0deg, rgba(26, 26, 26, 0.95) 5%, rgba(26, 26, 26, 0.35) 60%, rgba(26, 26, 26, 0.6)),
+      linear-gradient(90deg, rgba(26, 26, 26, 0.7), transparent 70%);
+  }
+
+  .st-hero__inner {
+    position: relative;
+  }
+
+  .st-hero h1 {
+    font-size: clamp(4rem, 13vw, 10rem);
+    line-height: 0.85;
+    text-transform: uppercase;
+  }
+
+  .st-hero__intro {
+    margin-top: 22px;
+    max-width: 52ch;
+    font-size: clamp(1.1rem, 1.6vw, 1.3rem);
+    color: #dedede;
+  }
+
+  .st-hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 26px;
+  }
+
+  .st-status,
+  .st-hero__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-weight: 600;
+  }
+
+  .st-status__dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--orange-bright);
+  }
+
+  .st-status.is-open .st-status__dot {
+    background: #3ddc84;
+    animation: pulse 2s infinite;
+  }
+
+  .st-status.is-closed .st-status__dot {
+    background: #9a9a9a;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(61, 220, 132, 0.6);
+    }
+    70%,
+    100% {
+      box-shadow: 0 0 0 10px rgba(61, 220, 132, 0);
+    }
+  }
+
+  .st-hero__rating :global(svg) {
+    width: 18px;
+    height: 18px;
+    fill: #ffb400;
+    stroke: #ffb400;
+  }
+
+  .st-hero__actions {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+  }
+
+  .infos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: clamp(72px, 10vw, 120px);
+  }
+
+  .infos__item {
+    display: flex;
+    gap: 18px;
+    padding: 26px;
+    border-radius: var(--radius-lg);
+    background: var(--grey-2);
+  }
+
+  .infos__title {
+    font-size: 1.6rem;
+    margin-bottom: 6px;
+  }
+
+  .infos__muted {
+    color: var(--grey-text);
+    font-size: 0.95rem;
+    margin-top: 4px;
+  }
+
+  .equip {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 18px;
+  }
+
+  .equip__item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 26px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--grey);
+    transition: border-color 0.3s, transform 0.3s var(--ease-out), box-shadow 0.3s;
+  }
+
+  .equip__item:hover {
+    border-color: transparent;
+    transform: translateY(-4px);
+    box-shadow: 0 24px 40px -24px rgba(0, 0, 0, 0.3);
+  }
+
+  .equip__item:hover .icon-tile {
+    transform: rotate(-8deg) scale(1.06);
+  }
+
+  .equip__item .icon-tile {
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .equip__item h3 {
+    font-size: 1.55rem;
+    margin-top: 4px;
+  }
+
+  .equip__item p {
+    color: var(--grey-text);
+    font-size: 0.98rem;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    grid-template-rows: 280px 280px;
+    gap: 16px;
+  }
+
+  .gallery__item {
+    margin: 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .gallery__item:first-child {
+    grid-row: span 2;
+  }
+
+  .gallery__item:nth-child(4) {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+
+  .gallery__item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.9s var(--ease-out);
+  }
+
+  .gallery__item:hover img {
+    transform: scale(1.05);
+  }
+
+  .map-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+  }
+
+  .map-lead {
+    margin-top: 18px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .map-access {
+    margin: 10px 0 28px;
+    color: var(--grey-text);
+  }
+
+  .other {
+    display: grid;
+    gap: 2px;
+    margin-top: 40px;
+    padding: 22px 24px;
+    border-radius: var(--radius-lg);
+    background: var(--anthracite);
+    color: var(--white);
+    text-decoration: none;
+    transition: transform 0.3s var(--ease-out);
+  }
+
+  .other:hover {
+    transform: translateX(6px);
+  }
+
+  .other__label {
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--orange-bright);
+  }
+
+  .other__name {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 2rem;
+  }
+
+  .other__name :global(svg) {
+    width: 24px;
+    height: 24px;
+  }
+
+  .other__meta {
+    color: #bdbdbd;
+  }
+
+  .map {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--grey);
+  }
+
+  .map > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) brightness(0.55);
+  }
+
+  .map :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .map__btn {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 6px;
+    border: 0;
+    background: transparent;
+    color: var(--white);
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 1.6rem;
+    text-transform: uppercase;
+  }
+
+  .map__btn :global(svg) {
+    width: 56px;
+    height: 56px;
+    padding: 14px;
+    border-radius: 50%;
+    background: var(--grad);
+    transition: transform 0.3s var(--ease-out);
+  }
+
+  .map__btn:hover :global(svg) {
+    transform: translateY(-4px) scale(1.08);
+  }
+
+  .map__btn small {
+    font-family: var(--font-body);
+    font-style: normal;
+    font-weight: 400;
+    font-size: 0.85rem;
+    text-transform: none;
+    opacity: 0.8;
+  }
+
+  @media (max-width: 900px) {
+    .infos {
+      grid-template-columns: 1fr;
+    }
+    .gallery {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 260px 260px;
+    }
+    .gallery__item:first-child {
+      grid-row: auto;
+    }
+    .gallery__item:nth-child(4) {
+      grid-column: auto;
+      grid-row: auto;
+    }
+    .map-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // La carte Google ne se charge qu'au clic (performance + pas de cookies tiers d'office)
+  document.querySelectorAll<HTMLElement>('[data-map]').forEach((map) => {
+    map.querySelector('[data-map-load]')?.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = map.dataset.map!;
+      iframe.title = 'Carte Google Maps de la station';
+      iframe.loading = 'lazy';
+      iframe.referrerPolicy = 'no-referrer-when-downgrade';
+      map.replaceChildren(iframe);
+    });
+  });
+</script>

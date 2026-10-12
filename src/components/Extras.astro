@@ -1,0 +1,290 @@
+---
+import Icon from './Icon.astro';
+---
+
+<section class="section section--light" id="abonnement">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker">Badge, boutique & environnement</p>
+      <h2>Tout est pensé <span class="text-grad">pour vous simplifier la vie</span></h2>
+    </div>
+
+    <div class="bento">
+      <article class="bento__item bento__item--badge" data-reveal>
+        <div class="icon-tile"><Icon name="badge" /></div>
+        <h3>Badge & abonnement</h3>
+        <p>
+          Rechargez votre badge au distributeur et utilisez-le sur toute la station : portiques, pistes et aspirateurs.
+          Carte d’abonnement fidélité disponible dans nos boutiques.
+        </p>
+        <div class="badge-visual" aria-hidden="true">
+          <div class="badge-visual__card">
+            <img src="/img/logo-480.webp" alt="" width="480" height="426" loading="lazy" />
+            <span>Carte fidélité</span>
+            <span class="badge-visual__chip"></span>
+          </div>
+        </div>
+      </article>
+
+      <article class="bento__item bento__item--photo" data-reveal>
+        <img src="/img/distributeur-24h.webp" alt="Distributeur automatique orange, ouvert 24h/24" width="736" height="1020" loading="lazy" />
+      </article>
+
+      <article class="bento__item bento__item--shop" data-reveal>
+        <div class="icon-tile"><Icon name="shop" /></div>
+        <h3>Deux boutiques ouvertes 7j/7</h3>
+        <p>Produits d’entretien allemands, microfibres, jetons. Et quelqu’un pour vous conseiller.</p>
+      </article>
+
+      <article class="bento__item bento__item--pay" data-reveal>
+        <div class="icon-tile"><Icon name="card" /></div>
+        <h3>Payez comme vous voulez</h3>
+        <ul>
+          <li>CB sans contact sur les bornes</li>
+          <li>Jetons</li>
+          <li>Badge rechargeable</li>
+        </ul>
+      </article>
+
+      <article class="bento__item bento__item--eco" data-reveal>
+        <div class="eco__drops" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="icon-tile"><Icon name="recycle" /></div>
+        <h3>L’eau, on la recycle</h3>
+        <p>
+          Nos stations sont équipées d’un système de recyclage de l’eau de lavage. Laver en station plutôt que chez
+          soi, c’est aussi éviter que les eaux sales finissent dans les égouts.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-areas:
+      'badge badge photo'
+      'shop pay photo'
+      'eco eco eco';
+    gap: 20px;
+  }
+
+  .bento__item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 30px;
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    overflow: hidden;
+  }
+
+  .bento__item h3 {
+    margin-top: 6px;
+  }
+
+  .bento__item p,
+  .bento__item li {
+    color: #4a4a4a;
+  }
+
+  .bento__item ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+
+  .bento__item--badge {
+    grid-area: badge;
+    padding-right: 46%;
+    background: var(--anthracite);
+    color: var(--white);
+  }
+
+  .bento__item--badge p {
+    color: #c9c9c9;
+  }
+
+  .badge-visual {
+    position: absolute;
+    right: 6%;
+    top: 50%;
+    width: 36%;
+    perspective: 800px;
+    transform: translateY(-50%);
+  }
+
+  .badge-visual__card {
+    position: relative;
+    aspect-ratio: 1.586;
+    border-radius: 16px;
+    padding: 18px;
+    background:
+      repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.08) 0 8px, transparent 8px 16px),
+      var(--grad);
+    box-shadow: 0 30px 50px -20px rgba(228, 72, 0, 0.6);
+    transform: rotateY(-18deg) rotateX(8deg) rotate(-4deg);
+    transition: transform 0.6s var(--ease-out);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: var(--white);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+  }
+
+  .bento__item--badge:hover .badge-visual__card {
+    transform: rotateY(0) rotateX(0) rotate(0) scale(1.04);
+  }
+
+  .badge-visual__card img {
+    width: 56px;
+  }
+
+  .badge-visual__chip {
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    width: 38px;
+    height: 28px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #f3d27a, #b8902e);
+  }
+
+  .bento__item--photo {
+    grid-area: photo;
+    padding: 0;
+    min-height: 420px;
+  }
+
+  .bento__item--photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .bento__item--shop {
+    grid-area: shop;
+  }
+
+  .bento__item--pay {
+    grid-area: pay;
+  }
+
+  .bento__item--eco {
+    grid-area: eco;
+    padding-right: 30%;
+    background: linear-gradient(120deg, #0f3b4f, #14627a);
+    color: var(--white);
+  }
+
+  .bento__item--eco p {
+    color: #d3e8ee;
+    max-width: 62ch;
+  }
+
+  .bento__item--eco .icon-tile {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .eco__drops {
+    position: absolute;
+    right: 8%;
+    top: 0;
+    bottom: 0;
+    width: 22%;
+  }
+
+  .eco__drops span {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-radius: 0 50% 50% 50%;
+    transform: rotate(45deg);
+    background: rgba(255, 255, 255, 0.55);
+    animation: drop 2.6s infinite cubic-bezier(0.55, 0, 0.9, 0.4);
+    top: -30px;
+  }
+
+  .eco__drops span:nth-child(1) {
+    left: 10%;
+  }
+  .eco__drops span:nth-child(2) {
+    left: 50%;
+    animation-delay: 0.9s;
+    width: 30px;
+    height: 30px;
+  }
+  .eco__drops span:nth-child(3) {
+    left: 85%;
+    animation-delay: 1.7s;
+  }
+
+  @keyframes drop {
+    0% {
+      top: -30px;
+      opacity: 0;
+    }
+    15% {
+      opacity: 1;
+    }
+    85% {
+      opacity: 1;
+    }
+    100% {
+      top: 100%;
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .bento {
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        'badge badge'
+        'shop photo'
+        'pay photo'
+        'eco eco';
+    }
+  }
+
+  @media (max-width: 600px) {
+    .bento {
+      grid-template-columns: 1fr;
+      grid-template-areas: 'badge' 'shop' 'pay' 'photo' 'eco';
+    }
+    .bento__item--badge {
+      padding-right: 30px;
+      padding-bottom: 210px;
+    }
+    .badge-visual {
+      top: auto;
+      bottom: 30px;
+      transform: none;
+      width: 220px;
+      right: 50%;
+      margin-right: -110px;
+    }
+    .bento__item--photo {
+      min-height: 360px;
+    }
+    .bento__item--eco {
+      padding-right: 30px;
+    }
+    .eco__drops {
+      opacity: 0.4;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .eco__drops {
+      display: none;
+    }
+  }
+</style>

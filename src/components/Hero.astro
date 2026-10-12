@@ -1,0 +1,393 @@
+---
+import Icon from './Icon.astro';
+import { company, stations } from '../data/site.js';
+const { marnaz, scionzier } = stations;
+---
+
+<section class="hero" data-hero>
+  <div class="hero__bg" aria-hidden="true">
+    <div class="hero__glow"></div>
+    <div class="hero__lines"></div>
+  </div>
+
+  <div class="wrap hero__grid">
+    <div class="hero__copy">
+      <p class="kicker hero__in">Marnaz · Scionzier · depuis {company.founded}</p>
+      <h1 class="hero__title">
+        <span class="hero__line"><span class="hero__in">Un véhicule</span></span>
+        <span class="hero__line"><span class="hero__in text-grad">impeccable.</span></span>
+      </h1>
+      <p class="hero__lead hero__in">
+        Toute la technologie <strong>WashTec</strong> dans deux stations premium, avec du personnel présent et des
+        boutiques ouvertes 7j/7.
+      </p>
+
+      <div class="hero__stations hero__in" role="group" aria-label="Choisissez votre station">
+        <a class="station-pick" href="/marnaz/">
+          <span class="station-pick__name">Marnaz</span>
+          <span class="station-pick__meta">{marnaz.hoursLabel}</span>
+          <span class="station-pick__rating"><Icon name="star" /> {String(marnaz.rating).replace('.', ',')}</span>
+          <Icon name="arrow" class="station-pick__arrow" />
+        </a>
+        <a class="station-pick" href="/scionzier/">
+          <span class="station-pick__name">Scionzier</span>
+          <span class="station-pick__meta">
+            <span class="live-dot" aria-hidden="true"></span>
+            {scionzier.hoursLabel}
+          </span>
+          <span class="station-pick__rating"><Icon name="star" /> {String(scionzier.rating).replace('.', ',')}</span>
+          <Icon name="arrow" class="station-pick__arrow" />
+        </a>
+      </div>
+    </div>
+
+    <div class="hero__visual">
+      <div class="hero__photo hero__photo--main">
+        <img
+          src="/img/mclaren-softcare.webp"
+          alt="McLaren noire sous le portique WashTec SoftCare éclairé en bleu"
+          width="896"
+          height="1020"
+          fetchpriority="high"
+        />
+      </div>
+      <div class="hero__photo hero__photo--small">
+        <img src="/img/porsche-portique.webp" alt="Porsche blanche sous le portique WashTec, mousse active" width="470" height="1020" />
+      </div>
+      <div class="hero__badge">
+        <span class="hero__badge-big">2,60 m</span>
+        <span>de passage<br />SUV & fourgons</span>
+      </div>
+    </div>
+  </div>
+
+  <a class="hero__scroll" href="#mousse" aria-label="Défiler vers la suite">
+    <span></span>
+  </a>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding-block: calc(var(--header-h) + 40px) 80px;
+    background: var(--anthracite);
+    color: var(--white);
+    overflow: hidden;
+  }
+
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .hero__glow {
+    position: absolute;
+    width: 70vw;
+    height: 70vw;
+    right: -20vw;
+    top: -10vw;
+    background: radial-gradient(circle, rgba(228, 72, 0, 0.35), transparent 60%);
+    filter: blur(20px);
+  }
+
+  .hero__lines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.025) 0 2px, transparent 2px 80px);
+  }
+
+  .hero__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+  }
+
+  .hero__title {
+    margin-block: 8px 24px;
+  }
+
+  .hero__line {
+    display: block;
+    overflow: hidden;
+    padding-block: 0.04em;
+    padding-right: 0.1em;
+  }
+
+  .hero__line > span {
+    display: inline-block;
+  }
+
+  .hero__lead {
+    font-size: clamp(1.1rem, 1.6vw, 1.3rem);
+    color: #c9c9c9;
+    max-width: 46ch;
+  }
+
+  .hero__lead strong {
+    color: var(--white);
+  }
+
+  .hero__stations {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 36px;
+    max-width: 560px;
+  }
+
+  .station-pick {
+    position: relative;
+    display: grid;
+    gap: 4px;
+    padding: 20px 22px;
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    text-decoration: none;
+    overflow: hidden;
+    isolation: isolate;
+    transition: border-color 0.3s, transform 0.3s var(--ease-out);
+  }
+
+  .station-pick::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--grad);
+    clip-path: polygon(0 0, 0 0, -20% 100%, -20% 100%);
+    transition: clip-path 0.5s var(--ease-out);
+  }
+
+  .station-pick:hover {
+    transform: translateY(-3px);
+    border-color: transparent;
+  }
+
+  .station-pick:hover::before {
+    clip-path: polygon(0 0, 120% 0, 100% 100%, -20% 100%);
+  }
+
+  .station-pick__name {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .station-pick__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .station-pick:hover .station-pick__meta {
+    color: var(--white);
+  }
+
+  .station-pick__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .station-pick__rating :global(svg) {
+    width: 16px;
+    height: 16px;
+    fill: #ffb400;
+    stroke: #ffb400;
+  }
+
+  .station-pick:hover .station-pick__rating :global(svg) {
+    fill: var(--white);
+    stroke: var(--white);
+  }
+
+  .station-pick :global(.station-pick__arrow) {
+    position: absolute;
+    right: 18px;
+    top: 22px;
+    width: 22px;
+    height: 22px;
+    transition: transform 0.3s var(--ease-out);
+  }
+
+  .station-pick:hover :global(.station-pick__arrow) {
+    transform: translateX(4px);
+  }
+
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #3ddc84;
+    box-shadow: 0 0 0 0 rgba(61, 220, 132, 0.6);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    70% {
+      box-shadow: 0 0 0 10px rgba(61, 220, 132, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(61, 220, 132, 0);
+    }
+  }
+
+  .hero__visual {
+    position: relative;
+    height: min(78vh, 680px);
+  }
+
+  .hero__photo {
+    position: absolute;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.7);
+  }
+
+  .hero__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero__photo--main {
+    inset: 0 0 0 14%;
+    clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%);
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  }
+
+  .hero__photo--small {
+    width: 36%;
+    aspect-ratio: 3 / 4;
+    left: 0;
+    bottom: -6%;
+    border: 6px solid var(--anthracite);
+  }
+
+  .hero__badge {
+    position: absolute;
+    right: -10px;
+    top: 10%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: var(--white);
+    color: var(--ink);
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    line-height: 1.25;
+    font-weight: 600;
+    box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.6);
+  }
+
+  .hero__badge-big {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 2rem;
+    color: var(--orange);
+  }
+
+  .hero__scroll {
+    position: absolute;
+    left: 50%;
+    bottom: 26px;
+    width: 26px;
+    height: 42px;
+    margin-left: -13px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 14px;
+  }
+
+  .hero__scroll span {
+    position: absolute;
+    left: 50%;
+    top: 8px;
+    width: 4px;
+    height: 8px;
+    margin-left: -2px;
+    border-radius: 2px;
+    background: var(--orange-bright);
+    animation: scrollhint 1.8s infinite;
+  }
+
+  @keyframes scrollhint {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    80%,
+    100% {
+      transform: translateY(16px);
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .hero {
+      min-height: auto;
+    }
+    .hero__grid {
+      grid-template-columns: 1fr;
+    }
+    .hero__visual {
+      height: 440px;
+      margin-top: 8px;
+    }
+    .hero__scroll {
+      display: none;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .hero__stations {
+      grid-template-columns: 1fr;
+    }
+    .hero__visual {
+      height: 380px;
+    }
+    .hero__badge {
+      right: 0;
+    }
+  }
+
+  :global(.js-motion) .hero__in {
+    opacity: 0;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  if (document.documentElement.classList.contains('js-motion')) {
+    const tl = gsap.timeline({ defaults: { ease: 'expo.out', duration: 1.2 } });
+    tl.fromTo('.hero__line > .hero__in', { yPercent: 110, opacity: 1 }, { yPercent: 0, opacity: 1, stagger: 0.12 })
+      .fromTo('p.hero__in, .hero__stations.hero__in', { y: 24, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.1 }, 0.25)
+      .from('.hero__photo--main', { clipPath: 'polygon(100% 0, 100% 0, 100% 100%, 86% 100%)', duration: 1.4 }, 0.1)
+      .from('.hero__photo--main img', { scale: 1.25, duration: 1.8 }, 0.1)
+      .from('.hero__photo--small', { y: 80, opacity: 0 }, 0.5)
+      .from('.hero__badge', { x: 40, opacity: 0 }, 0.7);
+
+    gsap.to('.hero__photo--main img', {
+      yPercent: 8,
+      ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+    });
+  }
+</script>

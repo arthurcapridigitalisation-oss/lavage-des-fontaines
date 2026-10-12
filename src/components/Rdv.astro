@@ -1,0 +1,189 @@
+---
+import Icon from './Icon.astro';
+import { company, rdvServices } from '../data/site.js';
+---
+
+<section class="section section--dark rdv" id="rdv">
+  <div class="wrap">
+    <div class="rdv__head">
+      <div class="section-head">
+        <p class="kicker">Sur rendez-vous</p>
+        <h2>On s’occupe <span class="text-grad">de tout</span></h2>
+        <p class="lead">
+          Pas le temps de laver vous-même ? Confiez-nous votre véhicule du lundi au vendredi pour un nettoyage
+          professionnel.
+        </p>
+      </div>
+      <a class="rdv__call" href={company.phoneHref}>
+        <span class="rdv__call-label">Prendre rendez-vous</span>
+        <span class="rdv__call-num"><Icon name="phone" /> {company.phone}</span>
+        <span class="rdv__call-hint">Du lundi au vendredi · devis sur demande</span>
+      </a>
+    </div>
+
+    <div class="rdv__grid">
+      {
+        rdvServices.map((s, i) => (
+          <article class="rdv-card" data-reveal>
+            <div class="rdv-card__media">
+              <img src={s.img} alt="" loading="lazy" data-parallax="14" />
+            </div>
+            <div class="rdv-card__body">
+              <p class="rdv-card__num">0{i + 1}</p>
+              <p class="rdv-card__sub">{s.subtitle}</p>
+              <h3>{s.title}</h3>
+              <p class="rdv-card__text">{s.text}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .rdv__head {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 40px;
+    align-items: end;
+    margin-bottom: clamp(40px, 6vw, 72px);
+  }
+
+  .rdv__head .section-head {
+    margin-bottom: 0;
+  }
+
+  .rdv__call {
+    display: grid;
+    gap: 6px;
+    padding: 28px 32px;
+    border-radius: var(--radius-lg);
+    background: var(--grad);
+    color: var(--white);
+    text-decoration: none;
+    transition: transform 0.3s var(--ease-out), box-shadow 0.3s;
+    box-shadow: 0 20px 50px -25px rgba(228, 72, 0, 0.8);
+  }
+
+  .rdv__call:hover {
+    transform: translateY(-4px) rotate(-1deg);
+    box-shadow: 0 30px 60px -25px rgba(228, 72, 0, 0.9);
+  }
+
+  .rdv__call-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .rdv__call-num {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    line-height: 1;
+  }
+
+  .rdv__call-num :global(svg) {
+    width: 30px;
+    height: 30px;
+  }
+
+  .rdv__call-hint {
+    opacity: 0.85;
+  }
+
+  .rdv__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .rdv-card {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--anthracite-2);
+  }
+
+  .rdv-card__media {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+
+  .rdv-card__media img {
+    width: 100%;
+    height: 120%;
+    object-fit: cover;
+    margin-top: -10%;
+    transition: filter 0.4s;
+    filter: saturate(0.9);
+  }
+
+  .rdv-card:hover .rdv-card__media img {
+    filter: saturate(1.15);
+  }
+
+  .rdv-card__body {
+    position: relative;
+    padding: 26px 26px 30px;
+  }
+
+  .rdv-card__num {
+    position: absolute;
+    right: 22px;
+    top: -34px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 4rem;
+    line-height: 1;
+    color: var(--white);
+    text-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .rdv-card__sub {
+    color: var(--orange-bright);
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .rdv-card__text {
+    margin-top: 12px;
+    color: #bdbdbd;
+  }
+
+  @media (max-width: 960px) {
+    .rdv__head {
+      grid-template-columns: 1fr;
+    }
+    .rdv__grid {
+      grid-template-columns: 1fr;
+    }
+    .rdv-card {
+      display: grid;
+      grid-template-columns: 0.8fr 1fr;
+    }
+    .rdv-card__media {
+      aspect-ratio: auto;
+      min-height: 220px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .rdv-card {
+      grid-template-columns: 1fr;
+    }
+    .rdv-card__media {
+      aspect-ratio: 16 / 10;
+      min-height: 0;
+    }
+  }
+</style>

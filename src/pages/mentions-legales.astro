@@ -1,0 +1,76 @@
+---
+import Base from '../layouts/Base.astro';
+import { company } from '../data/site.js';
+---
+
+<Base title="Mentions légales · Lavage des Fontaines" description="Mentions légales du site Lavage des Fontaines.">
+  <section class="legal-hero">
+    <div class="wrap">
+      <h1>Mentions légales</h1>
+    </div>
+  </section>
+
+  <section class="section section--white">
+    <div class="wrap legal">
+      <h2>Éditeur du site</h2>
+      <p>
+        {company.name}<br />
+        Siège social : {company.hq}<br />
+        SIRET : {company.siret}<br />
+        Téléphone : <a href={company.phoneHref}>{company.phone}</a><br />
+        <!-- À COMPLÉTER : forme juridique, capital, RCS, n° TVA intracommunautaire -->
+        Directeur de la publication : [à compléter]
+      </p>
+
+      <h2>Hébergement</h2>
+      <p>
+        <!-- À ADAPTER selon l'hébergeur retenu -->
+        Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis · vercel.com
+      </p>
+
+      <h2>Propriété intellectuelle</h2>
+      <p>
+        L’ensemble des contenus de ce site (textes, photographies, logo) est la propriété de {company.name}, sauf
+        mention contraire. Toute reproduction sans autorisation est interdite. WashTec, SoftCar et SoftCare sont des
+        marques de leurs propriétaires respectifs.
+      </p>
+
+      <h2>Données personnelles</h2>
+      <p>
+        Ce site ne collecte aucune donnée personnelle via formulaire et ne dépose pas de cookie de mesure d’audience.
+        La carte Google Maps n’est chargée qu’à votre demande, en cliquant sur « Afficher la carte » ; Google peut alors
+        déposer ses propres cookies.
+      </p>
+
+      <h2>Tarifs</h2>
+      <p>
+        Les tarifs indiqués sur ce site le sont à titre informatif. Seuls les tarifs affichés en station font foi.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legal-hero {
+    background: var(--anthracite);
+    color: var(--white);
+    padding-block: calc(var(--header-h) + 60px) 60px;
+  }
+
+  .legal {
+    max-width: 760px;
+  }
+
+  .legal h2 {
+    font-size: 2rem;
+    margin: 40px 0 12px;
+  }
+
+  .legal h2:first-child {
+    margin-top: 0;
+  }
+
+  .legal p {
+    color: #444;
+  }
+</style>

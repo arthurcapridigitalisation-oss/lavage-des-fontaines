@@ -1,0 +1,20 @@
+{
+  "name": "lavage-des-fontaines",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy": "./deploy.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "astro": "^7.3.8",
+    "gsap": "^3.15.0"
+  },
+  "private": true
+}

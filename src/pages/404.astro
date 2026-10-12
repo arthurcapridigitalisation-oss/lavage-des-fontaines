@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page introuvable · Lavage des Fontaines" description="Cette page n’existe pas.">
+  <section class="nf">
+    <div class="wrap">
+      <p class="kicker">Erreur 404</p>
+      <h1>Cette page est <span class="text-grad">partie au lavage.</span></h1>
+      <p class="nf__text">Elle n’existe pas ou a été déplacée.</p>
+      <a class="btn" href="/">Retour à l’accueil</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    min-height: 80svh;
+    display: flex;
+    align-items: center;
+    padding-top: var(--header-h);
+    background: var(--anthracite);
+    color: var(--white);
+  }
+
+  .nf__text {
+    margin: 20px 0 32px;
+    color: #bdbdbd;
+    font-size: 1.2rem;
+  }
+</style>

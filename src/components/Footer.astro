@@ -1,0 +1,177 @@
+---
+import Icon from './Icon.astro';
+import { company, stations } from '../data/site.js';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="stripes" aria-hidden="true"></div>
+  <div class="wrap footer__grid">
+    <div class="footer__brand">
+      <img src="/img/logo-480.webp" alt="Lavage des Fontaines" width="480" height="426" loading="lazy" />
+      <p>{company.tagline}</p>
+      <div class="footer__socials">
+        <a href={company.socials.facebook} target="_blank" rel="noopener" aria-label="Facebook"><Icon name="facebook" /></a>
+        <a href={company.socials.instagram} target="_blank" rel="noopener" aria-label="Instagram"><Icon name="instagram" /></a>
+        <a href={company.socials.linkedin} target="_blank" rel="noopener" aria-label="LinkedIn"><Icon name="linkedin" /></a>
+      </div>
+    </div>
+
+    {
+      Object.values(stations).map((s) => (
+        <div>
+          <h4>Station {s.name}</h4>
+          <p>
+            {s.address}
+            <br />
+            {s.city}
+          </p>
+          <p class="footer__muted">{s.hoursLabel}</p>
+          <a class="footer__link" href={`/${s.slug}/`}>
+            Voir la station <Icon name="arrow" />
+          </a>
+        </div>
+      ))
+    }
+
+    <div>
+      <h4>Nettoyage sur RDV</h4>
+      <p>Du lundi au vendredi</p>
+      <a class="footer__phone" href={company.phoneHref}>{company.phone}</a>
+    </div>
+  </div>
+
+  <div class="wrap footer__bottom">
+    <p>© {year} {company.name} · Depuis {company.founded}</p>
+    <a href="/mentions-legales/">Mentions légales</a>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--ink);
+    color: #cfcfcf;
+    padding-bottom: 32px;
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr 1fr;
+    gap: 40px;
+    padding-block: 72px 48px;
+  }
+
+  .footer__brand img {
+    width: 120px;
+    margin-bottom: 18px;
+  }
+
+  .footer__brand p {
+    max-width: 30ch;
+  }
+
+  h4 {
+    color: var(--white);
+    font-size: 1.5rem;
+    margin-bottom: 14px;
+  }
+
+  .footer__muted {
+    color: #8d8d8d;
+    margin-top: 6px;
+  }
+
+  .footer__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    color: var(--orange-bright);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .footer__link :global(svg) {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s;
+  }
+
+  .footer__link:hover :global(svg) {
+    transform: translateX(4px);
+  }
+
+  .footer__phone {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 1.8rem;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .footer__socials {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .footer__socials a {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--anthracite-2);
+    color: var(--white);
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .footer__socials a:hover {
+    background: var(--orange);
+    transform: translateY(-2px);
+  }
+
+  .footer__socials :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.92rem;
+    color: #8d8d8d;
+  }
+
+  .footer__bottom a {
+    color: inherit;
+  }
+
+  @media (max-width: 900px) {
+    .footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .footer__brand {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 1080px) {
+    .footer {
+      padding-bottom: calc(88px + env(safe-area-inset-bottom));
+    }
+  }
+
+  @media (max-width: 520px) {
+    .footer__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

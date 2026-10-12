@@ -1,0 +1,99 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { company, stations } from '../data/site.js';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  jsonLd?: object | object[];
+}
+
+const { title, description, image = '/img/mclaren-softcare.webp', jsonLd } = Astro.props;
+// URL absolue qui tient compte du sous-dossier éventuel (GitHub Pages)
+const abs = (path: string) => new URL(import.meta.env.BASE_URL.replace(/\/$/, '') + path, Astro.site).toString();
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = abs(image);
+
+const defaultJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: company.name,
+  url: abs('/'),
+  logo: abs('/img/logo-180.png'),
+  telephone: '+33638852265',
+  foundingDate: String(company.founded),
+  sameAs: Object.values(company.socials),
+  department: Object.values(stations).map((s) => ({
+    '@type': 'AutoWash',
+    name: `${company.name} ${s.name}`,
+    url: abs(`/${s.slug}/`),
+  })),
+};
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="theme-color" content="#242424" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content={company.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,600;1,700;1,800&family=Barlow:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script is:inline>
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('js-motion');
+      }
+    </script>
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd ?? defaultJsonLd)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <Header />
+    <main id="contenu">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      import '../scripts/motion';
+    </script>
+
+    <style>
+      .skip-link {
+        position: absolute;
+        left: 16px;
+        top: -60px;
+        z-index: 100;
+        padding: 10px 16px;
+        background: var(--white);
+        color: var(--ink);
+        border-radius: 8px;
+      }
+      .skip-link:focus {
+        top: 16px;
+      }
+    </style>
+  </body>
+</html>

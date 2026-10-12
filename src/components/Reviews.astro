@@ -1,0 +1,154 @@
+---
+import Icon from './Icon.astro';
+import { stations, reviewThemes } from '../data/site.js';
+---
+
+<section class="section section--white reviews">
+  <div class="wrap reviews__grid">
+    <div>
+      <p class="kicker">Avis Google</p>
+      <h2>Ils en parlent <span class="text-grad">mieux que nous</span></h2>
+      <div class="reviews__scores">
+        {
+          Object.values(stations).map((s) => (
+            <a
+              class="score"
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.mapsQuery)}`}
+              target="_blank"
+              rel="noopener"
+              data-reveal
+            >
+              <span class="score__value">{String(s.rating).replace('.', ',')}</span>
+              <span class="score__stars" style={`--rating:${s.rating}`} aria-hidden="true">
+                ★★★★★
+              </span>
+              <span class="score__meta">
+                {s.name} · {s.reviews} avis
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="reviews__themes">
+      <p class="reviews__intro">Ce qui revient le plus souvent dans vos avis :</p>
+      {
+        reviewThemes.map((t) => (
+          <div class="theme" data-reveal>
+            <span class="theme__icon">
+              <Icon name="sparkle" />
+            </span>
+            <div>
+              <h3>{t.title}</h3>
+              <p>{t.text}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .reviews__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(40px, 6vw, 96px);
+    align-items: start;
+  }
+
+  .reviews__scores {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .score {
+    display: grid;
+    gap: 4px;
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    background: var(--grey-2);
+    text-decoration: none;
+    transition: transform 0.3s var(--ease-out), background 0.3s;
+  }
+
+  .score:hover {
+    transform: translateY(-4px);
+    background: var(--grey);
+  }
+
+  .score__value {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: 4rem;
+    line-height: 1;
+  }
+
+  .score__stars {
+    --pct: calc(var(--rating) / 5 * 100%);
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, #ffb400 var(--pct), #cfcfcf var(--pct));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    width: fit-content;
+  }
+
+  .score__meta {
+    color: var(--grey-text);
+    font-weight: 500;
+  }
+
+  .reviews__intro {
+    color: var(--grey-text);
+    margin-bottom: 12px;
+  }
+
+  .reviews__themes {
+    display: grid;
+    gap: 4px;
+  }
+
+  .theme {
+    display: flex;
+    gap: 18px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--grey);
+  }
+
+  .theme h3 {
+    font-size: 1.6rem;
+  }
+
+  .theme p {
+    color: var(--grey-text);
+    margin-top: 4px;
+  }
+
+  .theme__icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--grad);
+    color: var(--white);
+  }
+
+  .theme__icon :global(svg) {
+    width: 22px;
+    height: 22px;
+  }
+
+  @media (max-width: 900px) {
+    .reviews__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

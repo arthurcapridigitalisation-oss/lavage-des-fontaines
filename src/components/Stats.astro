@@ -1,0 +1,76 @@
+---
+import { stations } from '../data/site.js';
+// Arrondi à la dizaine inférieure : les chiffres Google bougent
+const totalReviews = Math.floor(Object.values(stations).reduce((n, s) => n + s.reviews, 0) / 10) * 10;
+const stats = [
+  { value: 4.8, decimals: 1, suffix: '/5', label: 'Note Google' },
+  { value: totalReviews, decimals: 0, prefix: '+', label: 'avis clients' },
+  { value: 7, decimals: 0, suffix: 'j/7', label: 'personnel & boutiques' },
+  { value: 24, decimals: 0, suffix: 'h/24', label: 'ouvert à Scionzier' },
+];
+---
+
+<section class="stats section--white">
+  <div class="wrap stats__grid">
+    {
+      stats.map((s) => (
+        <div class="stats__item" data-reveal>
+          <p class="stats__value">
+            {s.prefix}
+            <span data-count={s.value} data-decimals={s.decimals}>
+              {s.value.toFixed(s.decimals).replace('.', ',')}
+            </span>
+            <small>{s.suffix}</small>
+          </p>
+          <p class="stats__label">{s.label}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .stats {
+    padding-block: clamp(56px, 8vw, 96px);
+  }
+
+  .stats__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+
+  .stats__item {
+    border-left: 4px solid transparent;
+    border-image: var(--grad) 1;
+    padding-left: 20px;
+  }
+
+  .stats__value {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    font-size: clamp(3rem, 6vw, 4.8rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stats__value small {
+    font-size: 0.45em;
+    color: var(--orange);
+    margin-left: 4px;
+  }
+
+  .stats__label {
+    margin-top: 6px;
+    color: var(--grey-text);
+    font-weight: 500;
+  }
+
+  @media (max-width: 800px) {
+    .stats__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 36px 20px;
+    }
+  }
+</style>
